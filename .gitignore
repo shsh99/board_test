@@ -1,0 +1,43 @@
+# Node modules
+node_modules/
+frontend/node_modules/
+
+# Build outputs
+backend/build/
+backend/out/
+frontend/dist/
+frontend/build/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+.DS_Store
+
+# Gradle
+.gradle/
+backend/.gradle/
+
+# Application properties with secrets
+backend/src/main/resources/application-local.yml
+
+# Logs
+*.log
+backend/logs/
+
+# OS
+Thumbs.db
+
+# H2 Database
+*.db
+backend/*.db
+
+# Environment variables
+.env
+.env.local
+
+# Package manager lock files
+package-lock.json
+yarn.lock

@@ -1,0 +1,24 @@
+{
+  "name": "kanban-board",
+  "version": "1.0.0",
+  "description": "Kanban Board Monorepo with Spring Boot Backend and React Frontend",
+  "private": true,
+  "scripts": {
+    "install:all": "npm install && cd frontend && npm install",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd backend && gradlew.bat bootRun",
+    "dev:frontend": "cd frontend && npm run dev",
+    "build": "npm run build:backend && npm run build:frontend",
+    "build:backend": "cd backend && gradlew.bat build",
+    "build:frontend": "cd frontend && npm run build",
+    "clean": "npm run clean:backend && npm run clean:frontend",
+    "clean:backend": "cd backend && gradlew.bat clean",
+    "clean:frontend": "cd frontend && npm run clean",
+    "test": "npm run test:backend && npm run test:frontend",
+    "test:backend": "cd backend && gradlew.bat test",
+    "test:frontend": "cd frontend && npm run test"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
