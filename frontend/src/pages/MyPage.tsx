@@ -28,7 +28,7 @@ interface BoardsResponse {
 }
 
 export default function MyPage() {
-  const { user } = useAuth();
+  const { user, login, token } = useAuth();
   const [activeTab, setActiveTab] = useState<'boards' | 'comments' | 'profile'>('profile');
   const [boards, setBoards] = useState<Board[]>([]);
   const [comments, setComments] = useState<Comment[]>([]);
@@ -111,7 +111,17 @@ export default function MyPage() {
           },
         }
       );
-      setProfileImageUrl(response.data.profileImageUrl);
+      const newImageUrl = response.data.profileImageUrl;
+      setProfileImageUrl(newImageUrl);
+
+      // Update user context with new profile image
+      if (user && token) {
+        login(token, {
+          ...user,
+          profileImageUrl: newImageUrl,
+        });
+      }
+
       alert('프로필 이미지가 업로드되었습니다.');
     } catch (error: any) {
       console.error('Failed to upload image:', error);
@@ -130,6 +140,15 @@ export default function MyPage() {
     try {
       await api.delete('/users/me/profile-image');
       setProfileImageUrl(null);
+
+      // Update user context to remove profile image
+      if (user && token) {
+        login(token, {
+          ...user,
+          profileImageUrl: undefined,
+        });
+      }
+
       alert('프로필 이미지가 삭제되었습니다.');
     } catch (error) {
       console.error('Failed to delete image:', error);
