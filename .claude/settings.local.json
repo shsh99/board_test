@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nfeat(frontend): React 프로젝트 초기 설정\n\n- React 19, TypeScript, Vite 프로젝트 초기화\n- Tailwind CSS 설정 (Glassmorphism 디자인)\n- 프록시 설정 (백엔드 API: http://localhost:8020)\n- 기본 의존성\n  - react-router-dom: 라우팅\n  - axios: HTTP 클라이언트\n- index.html 기본 설정\n- 프로젝트 가이드 문서 (CLAUDE.md)\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
