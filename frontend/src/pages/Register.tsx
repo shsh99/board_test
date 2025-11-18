@@ -30,6 +30,7 @@ export default function Register() {
         username: response.username,
         email: response.email,
         fullName: response.fullName,
+        profileImageUrl: response.profileImageUrl,
       });
       navigate('/');
     } catch (err: any) {

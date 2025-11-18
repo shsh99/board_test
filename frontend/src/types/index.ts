@@ -2,6 +2,7 @@ export interface User {
   username: string;
   email: string;
   fullName?: string;
+  profileImageUrl?: string;
 }
 
 export interface AuthResponse {
@@ -9,6 +10,7 @@ export interface AuthResponse {
   username: string;
   email: string;
   fullName?: string;
+  profileImageUrl?: string;
 }
 
 export interface LoginRequest {

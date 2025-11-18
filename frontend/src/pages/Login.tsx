@@ -23,6 +23,7 @@ export default function Login() {
         username: response.username,
         email: response.email,
         fullName: response.fullName,
+        profileImageUrl: response.profileImageUrl,
       });
       navigate('/');
     } catch (err: any) {

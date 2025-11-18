@@ -49,10 +49,18 @@ export default function Navbar() {
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                     className="hidden md:flex items-center space-x-2 px-4 py-2 bg-white/50 rounded-lg border border-white/30 hover:bg-white/60 transition-all duration-200"
                   >
-                    <div className="w-8 h-8 bg-gradient-to-br from-primary-400 to-secondary-400 rounded-full flex items-center justify-center">
-                      <span className="text-white font-semibold text-sm">
-                        {(user?.fullName || user?.username)?.charAt(0).toUpperCase()}
-                      </span>
+                    <div className="w-8 h-8 bg-gradient-to-br from-primary-400 to-secondary-400 rounded-full flex items-center justify-center overflow-hidden">
+                      {user?.profileImageUrl ? (
+                        <img
+                          src={`http://localhost:8020${user.profileImageUrl}`}
+                          alt="Profile"
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <span className="text-white font-semibold text-sm">
+                          {(user?.fullName || user?.username)?.charAt(0).toUpperCase()}
+                        </span>
+                      )}
                     </div>
                     <span className="text-sm font-medium text-slate-700">
                       {user?.fullName || user?.username}
@@ -113,10 +121,18 @@ export default function Navbar() {
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                   className="md:hidden p-2 bg-white/50 rounded-lg border border-white/30 hover:bg-white/60 transition-all duration-200"
                 >
-                  <div className="w-8 h-8 bg-gradient-to-br from-primary-400 to-secondary-400 rounded-full flex items-center justify-center">
-                    <span className="text-white font-semibold text-sm">
-                      {(user?.fullName || user?.username)?.charAt(0).toUpperCase()}
-                    </span>
+                  <div className="w-8 h-8 bg-gradient-to-br from-primary-400 to-secondary-400 rounded-full flex items-center justify-center overflow-hidden">
+                    {user?.profileImageUrl ? (
+                      <img
+                        src={`http://localhost:8020${user.profileImageUrl}`}
+                        alt="Profile"
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <span className="text-white font-semibold text-sm">
+                        {(user?.fullName || user?.username)?.charAt(0).toUpperCase()}
+                      </span>
+                    )}
                   </div>
                 </button>
               </>

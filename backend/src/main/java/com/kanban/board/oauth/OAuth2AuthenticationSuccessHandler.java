@@ -39,6 +39,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                 .queryParam("username", username)
                 .queryParam("email", oAuth2User.getUser().getEmail())
                 .queryParam("fullName", oAuth2User.getUser().getFullName())
+                .queryParam("profileImageUrl", oAuth2User.getUser().getProfileImageUrl() != null ? oAuth2User.getUser().getProfileImageUrl() : "")
                 .encode()
                 .build().toUriString();
 

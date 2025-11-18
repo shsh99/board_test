@@ -12,6 +12,7 @@ export default function OAuth2Redirect() {
     const username = searchParams.get('username');
     const email = searchParams.get('email');
     const fullName = searchParams.get('fullName');
+    const profileImageUrl = searchParams.get('profileImageUrl');
 
     if (token && username && email) {
       // Store token and user info
@@ -19,6 +20,7 @@ export default function OAuth2Redirect() {
         username,
         email,
         fullName: fullName || '',
+        profileImageUrl: profileImageUrl || undefined,
       });
 
       // Redirect to home page
