@@ -1,0 +1,4 @@
+[submodule "secrets"]
+	path = secrets
+	url = https://github.com/shsh99/borad_secrets.git
+	branch = main

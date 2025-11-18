@@ -68,17 +68,109 @@ cd frontend
 npm install
 cd ..
 
-# 3. 백엔드 환경 변수 설정 (application.yml)
-# backend/src/main/resources/application.yml에 Google OAuth2 설정 추가
-# spring.security.oauth2.client.registration.google.client-id: YOUR_CLIENT_ID
-# spring.security.oauth2.client.registration.google.client-secret: YOUR_CLIENT_SECRET
+# 3. Secrets 서브모듈 초기화 (환경 변수 파일 포함)
+git submodule update --init --recursive
+# 자세한 내용은 아래 "환경 변수 및 Secrets 관리" 섹션 참조
 ```
+
+### 환경 변수 및 Secrets 관리
+
+이 프로젝트는 민감한 정보(API 키, 시크릿 등)를 **Git Submodule**로 관리합니다.
+
+#### Secrets 저장소 초기화
+
+프로젝트 클론 후 반드시 서브모듈을 초기화해야 합니다:
+
+```bash
+# 서브모듈 초기화
+git submodule update --init --recursive
+
+# 환경 변수 확인
+cat secrets/.env.development
+```
+
+#### 환경 변수 파일 구조
+
+```
+secrets/
+├── .env.development      # 개발 환경 변수 (실제 값 포함)
+├── .env.production       # 프로덕션 환경 변수 (실제 값 포함)
+├── .env.example          # 환경 변수 템플릿 (예시 값)
+└── README.md             # Secrets 저장소 가이드
+```
+
+#### 환경 변수 사용 방법
+
+**Spring Boot (Backend)**
+- IntelliJ IDEA: Run Configuration → Environment Variables 설정
+- VS Code: launch.json에 env 설정 추가
+- 명령줄:
+  ```bash
+  # Windows (PowerShell)
+  $env:GOOGLE_CLIENT_ID="your-client-id"
+  $env:GOOGLE_CLIENT_SECRET="your-client-secret"
+  ./gradlew bootRun
+
+  # Linux/Mac
+  export $(cat secrets/.env.development | xargs)
+  ./gradlew bootRun
+  ```
+
+**주요 환경 변수**:
+- `GOOGLE_CLIENT_ID`: Google OAuth2 클라이언트 ID
+- `GOOGLE_CLIENT_SECRET`: Google OAuth2 클라이언트 시크릿
+- `JWT_SECRET`: JWT 토큰 서명 키 (최소 256비트)
+- `JWT_EXPIRATION`: JWT 토큰 만료 시간 (밀리초, 기본: 86400000 = 24시간)
+- `OAUTH2_REDIRECT_URI`: OAuth2 인증 성공 후 리다이렉트 URI
+
+#### 새로운 팀원 온보딩
+
+1. **Secrets 저장소 접근 권한 요청** (Private Repository)
+2. **서브모듈 업데이트**:
+   ```bash
+   git submodule update --init --recursive
+   ```
+3. **환경 변수 확인**:
+   ```bash
+   cat secrets/.env.development
+   ```
+
+#### 환경 변수 업데이트 (팀원 공유)
+
+```bash
+# secrets 디렉토리로 이동
+cd secrets
+
+# 환경 변수 파일 수정
+vim .env.development
+
+# 변경사항 커밋 및 푸시
+git add .env.development
+git commit -m "Update environment variables"
+git push origin main
+
+# 메인 프로젝트로 돌아가기
+cd ..
+```
+
+#### 다른 팀원의 업데이트 받기
+
+```bash
+cd secrets
+git pull origin main
+cd ..
+```
+
+⚠️ **보안 주의사항**:
+- `secrets/` 저장소는 **반드시 Private Repository**로 관리
+- `.env.development`, `.env.production` 파일은 실제 값 포함
+- 절대로 메인 프로젝트에 민감 정보를 커밋하지 말 것
 
 ### Google OAuth2 설정
 
 소셜 로그인 기능을 사용하려면 Google Cloud Console에서 OAuth2 클라이언트를 생성해야 합니다.
 
-#### 1. Google Cloud Console 설정
+#### Google Cloud Console 설정
 
 1. [Google Cloud Console](https://console.cloud.google.com/)에 접속
 2. 프로젝트 생성 또는 기존 프로젝트 선택
@@ -88,29 +180,7 @@ cd ..
 6. 승인된 리디렉션 URI에 다음 추가:
    - `http://localhost:8020/login/oauth2/code/google`
 
-#### 2. application.yml 설정
-
-`backend/src/main/resources/application.yml` 파일에 다음 내용 추가:
-
-```yaml
-spring:
-  security:
-    oauth2:
-      client:
-        registration:
-          google:
-            client-id: YOUR_GOOGLE_CLIENT_ID
-            client-secret: YOUR_GOOGLE_CLIENT_SECRET
-            scope:
-              - email
-              - profile
-            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
-
-oauth2:
-  authorized-redirect-uri: http://localhost:3020/oauth2/redirect
-```
-
-**주의**: 실제 클라이언트 ID와 시크릿으로 교체하세요.
+생성된 클라이언트 ID와 시크릿을 `secrets/.env.development` 파일에 추가하세요.
 
 ### 개발 서버 실행
 
