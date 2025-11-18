@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 
 interface Board {
@@ -52,7 +52,7 @@ export default function MyPage() {
 
   const fetchProfileImage = async () => {
     try {
-      const response = await axios.get('http://localhost:8020/api/users/me/profile-image');
+      const response = await api.get('/users/me/profile-image');
       setProfileImageUrl(response.data.profileImageUrl);
     } catch (error) {
       console.error('Failed to fetch profile image:', error);
@@ -61,8 +61,8 @@ export default function MyPage() {
 
   const fetchMyBoards = async (page: number) => {
     try {
-      const response = await axios.get<BoardsResponse>(
-        `http://localhost:8020/api/users/me/boards?page=${page}&size=10`
+      const response = await api.get<BoardsResponse>(
+        `/users/me/boards?page=${page}&size=10`
       );
       setBoards(response.data.content);
       setTotalPages(response.data.totalPages);
@@ -73,7 +73,7 @@ export default function MyPage() {
 
   const fetchMyComments = async () => {
     try {
-      const response = await axios.get<Comment[]>('http://localhost:8020/api/users/me/comments');
+      const response = await api.get<Comment[]>('/users/me/comments');
       setComments(response.data);
     } catch (error) {
       console.error('Failed to fetch comments:', error);
@@ -102,8 +102,8 @@ export default function MyPage() {
     formData.append('file', file);
 
     try {
-      const response = await axios.post(
-        'http://localhost:8020/api/users/me/profile-image',
+      const response = await api.post(
+        '/users/me/profile-image',
         formData,
         {
           headers: {
@@ -116,7 +116,7 @@ export default function MyPage() {
     } catch (error: any) {
       console.error('Failed to upload image:', error);
       alert(error.response?.data?.message || '이미지 업로드에 실패했습니다.');
-    } finally {
+    } finally{
       setIsUploading(false);
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
@@ -128,7 +128,7 @@ export default function MyPage() {
     if (!confirm('프로필 이미지를 삭제하시겠습니까?')) return;
 
     try {
-      await axios.delete('http://localhost:8020/api/users/me/profile-image');
+      await api.delete('/users/me/profile-image');
       setProfileImageUrl(null);
       alert('프로필 이미지가 삭제되었습니다.');
     } catch (error) {
