@@ -17,6 +17,7 @@ public class CommentResponse {
     private Long id;
     private String content;
     private Long boardId;
+    private String boardTitle;
     private String authorUsername;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -26,6 +27,7 @@ public class CommentResponse {
                 .id(comment.getId())
                 .content(comment.getContent())
                 .boardId(comment.getBoard().getId())
+                .boardTitle(comment.getBoard().getTitle())
                 .authorUsername(comment.getAuthor().getUsername())
                 .createdAt(comment.getCreatedAt())
                 .updatedAt(comment.getUpdatedAt())
