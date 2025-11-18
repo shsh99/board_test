@@ -7,6 +7,7 @@ import BoardForm from './pages/BoardForm';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import OAuth2Redirect from './pages/OAuth2Redirect';
+import MyPage from './pages/MyPage';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/oauth2/redirect" element={<OAuth2Redirect />} />
+            <Route path="/mypage" element={<MyPage />} />
           </Routes>
         </div>
       </Router>

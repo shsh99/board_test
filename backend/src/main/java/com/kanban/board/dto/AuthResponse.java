@@ -13,5 +13,14 @@ public class AuthResponse {
     private String username;
     private String email;
     private String fullName;
+    private String profileImageUrl;
+
+    public AuthResponse(String token, String username, String email, String fullName) {
+        this.token = token;
+        this.username = username;
+        this.email = email;
+        this.fullName = fullName;
+        this.profileImageUrl = null;
+    }
 
 }

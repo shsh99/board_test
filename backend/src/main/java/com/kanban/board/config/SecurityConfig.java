@@ -50,6 +50,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/boards/{boardId}/comments").permitAll()
                         .requestMatchers("/oauth2/**").permitAll()
                         .requestMatchers("/login/oauth2/**").permitAll()
+                        .requestMatchers("/uploads/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

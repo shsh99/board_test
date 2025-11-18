@@ -36,6 +36,9 @@ public class User {
     @Column(length = 100)
     private String fullName;
 
+    @Column(length = 500)
+    private String profileImageUrl;
+
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;

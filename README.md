@@ -3,6 +3,10 @@
 Spring Boot 백엔드와 React 프론트엔드로 구성된 칸반 게시판 모노레포 프로젝트입니다.
 Google OAuth2 소셜 로그인, JWT 인증, 게시판 CRUD, 댓글 기능을 지원하며 모던한 Glassmorphism 디자인이 적용되어 있습니다.
 
+<img width="1898" height="831" alt="image" src="https://github.com/user-attachments/assets/41cf7e06-c4ed-49ce-a37e-6849047a8323" />
+<img width="1768" height="866" alt="image" src="https://github.com/user-attachments/assets/8e67600b-96e9-4bcc-9ac2-4b154f272f20" />
+
+
 ## 기술 스택
 
 ### 백엔드
