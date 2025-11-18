@@ -37,6 +37,13 @@ backend/*.db
 # Environment variables
 .env
 .env.local
+.env.development
+.env.production
+
+# Secrets directory (managed as submodule)
+# Note: secrets/ itself is tracked via .gitmodules, but its contents are ignored
+secrets/.env.*
+secrets/*.env
 
 # Package manager lock files
 package-lock.json
