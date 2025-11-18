@@ -3,15 +3,17 @@
 ## 프로젝트 개요
 
 Spring Boot 백엔드와 React 프론트엔드로 구성된 칸반 게시판 모노레포 프로젝트입니다.
+Google OAuth2 소셜 로그인, JWT 인증, 게시판 CRUD, 댓글 기능을 지원하며 Glassmorphism 디자인이 적용되어 있습니다.
 
 ## 기술 스택 및 버전
 
 ### 백엔드
-- **언어**: Java 17
+- **언어**: Java 21
 - **프레임워크**: Spring Boot 3.2.0
-- **보안**: Spring Security + JWT
+- **보안**: Spring Security + JWT + OAuth2 (Google)
 - **데이터베이스**: H2 (개발), PostgreSQL (프로덕션)
 - **빌드 도구**: Gradle 8.5+
+- **환경 변수**: spring-dotenv 4.0.0
 - **포트**: 8020
 
 ### 프론트엔드
@@ -94,22 +96,28 @@ board/
 │   ├── package.json                      # 프론트엔드 의존성
 │   └── CLAUDE.md                         # 프론트엔드 개발 가이드
 │
+├── secrets/                              # Git Submodule (환경 변수)
+│   ├── .env.development                 # 개발 환경 변수
+│   ├── .env.example                     # 환경 변수 템플릿
+│   └── README.md                        # Secrets 관리 가이드
 ├── package.json                          # 루트 오케스트레이션
 ├── README.md                             # 프로젝트 문서
-├── START.md                              # 빠른 시작 가이드
 ├── CONTEXT.md                            # 이 파일
 └── .gitignore                            # Git 제외 파일
 ```
 
 ## API 엔드포인트
 
-### 인증 API (공개)
+### 인증 API
 - `POST /api/auth/register` - 회원가입
   - 요청: `{ username, email, password, fullName? }`
   - 응답: `{ token, username, email, fullName }`
 - `POST /api/auth/login` - 로그인
   - 요청: `{ username, password }`
   - 응답: `{ token, username, email, fullName }`
+- `POST /api/auth/logout` - 로그아웃
+- `GET /oauth2/authorization/google` - Google 소셜 로그인 시작
+- `GET /login/oauth2/code/google` - Google OAuth2 콜백 (자동 처리)
 
 ### 게시판 API
 - `GET /api/boards?page={page}&size={size}` - 게시글 목록 (공개)
@@ -119,6 +127,12 @@ board/
 - `DELETE /api/boards/{id}` - 게시글 삭제 (인증 필요, 작성자만)
 - `GET /api/boards/search?keyword={keyword}&page={page}&size={size}` - 게시글 검색 (공개)
 - `GET /api/boards/user/{username}?page={page}&size={size}` - 사용자별 게시글 (공개)
+
+### 댓글 API
+- `GET /api/boards/{boardId}/comments` - 게시글의 댓글 목록 조회
+- `POST /api/boards/{boardId}/comments` - 댓글 작성 (인증 필요)
+- `PUT /api/comments/{id}` - 댓글 수정 (작성자만)
+- `DELETE /api/comments/{id}` - 댓글 삭제 (작성자만)
 
 ## 데이터 모델
 
@@ -144,27 +158,50 @@ createdAt: LocalDateTime (자동)
 updatedAt: LocalDateTime (자동)
 ```
 
+### Comment
+```
+id: Long (PK, AUTO_INCREMENT)
+content: Text (NOT NULL)
+author: User (FK, LAZY)
+board: Board (FK, LAZY)
+createdAt: LocalDateTime (자동)
+updatedAt: LocalDateTime (자동)
+```
+
 ## 개발 워크플로
 
 ### 로컬 개발 환경 설정
 
-1. **의존성 설치**
+1. **저장소 클론 및 서브모듈 초기화**
+   ```bash
+   git clone https://github.com/shsh99/board_test.git
+   cd board_test
+   git submodule update --init --recursive
+   ```
+
+2. **의존성 설치**
    ```bash
    npm install                # 루트 (concurrently)
    cd frontend && npm install # 프론트엔드
    ```
 
-2. **백엔드 실행** (IDE 권장)
+3. **환경 변수 설정**
+   ```bash
+   cp secrets/.env.development backend/.env
+   ```
+
+4. **백엔드 실행** (IDE 권장)
    - IntelliJ IDEA: `backend` 폴더 열기 → `KanbanBoardApplication.java` 실행
    - VS Code: Spring Boot Extension Pack 설치 후 실행
+   - 환경 변수는 `backend/.env` 파일에서 자동 로드됨
 
-3. **프론트엔드 실행**
+5. **프론트엔드 실행**
    ```bash
    cd frontend
    npm run dev
    ```
 
-4. **접속**
+6. **접속**
    - 프론트엔드: http://localhost:3020
    - 백엔드 API: http://localhost:8020/api
    - H2 콘솔: http://localhost:8020/h2-console
@@ -295,18 +332,20 @@ npm run build
 
 ## 참고 문서
 
-- [README.md](README.md) - 프로젝트 개요
-- [START.md](START.md) - 빠른 시작 가이드
-- [backend/CLAUDE.md](backend/CLAUDE.md) - 백엔드 상세 가이드
-- [frontend/CLAUDE.md](frontend/CLAUDE.md) - 프론트엔드 상세 가이드
+- [README.md](README.md) - 프로젝트 전체 가이드
+- [backend/CLAUDE.md](backend/CLAUDE.md) - 백엔드 개발 표준
+- [frontend/CLAUDE.md](frontend/CLAUDE.md) - 프론트엔드 개발 표준
+- [secrets/README.md](secrets/README.md) - 환경 변수 관리 가이드
 
 ## 주요 의존성 버전
 
 ### 백엔드
 ```gradle
 Spring Boot: 3.2.0
-Java: 17
-JWT: 0.12.3 (jjwt)
+Java: 21
+Spring Security OAuth2 Client: 포함
+JWT: 0.11.5 (jjwt)
+spring-dotenv: 4.0.0
 H2: runtime
 Lombok: compileOnly
 ```
@@ -321,19 +360,30 @@ Axios: 1.6.2
 React Router: 6.21.0
 ```
 
-## 다음 단계 (향후 개선사항)
+## 구현 완료 기능
+
+- [x] 일반 회원가입/로그인 (JWT)
+- [x] Google OAuth2 소셜 로그인
+- [x] 게시판 CRUD
+- [x] 댓글 기능
+- [x] Glassmorphism 디자인
+- [x] Git Submodule 환경 변수 관리
+- [x] 자동 환경 변수 로드 (spring-dotenv)
+
+## 향후 개선사항
 
 - [ ] 테스트 코드 작성 (백엔드/프론트엔드)
-- [ ] 댓글 기능 추가
-- [ ] 파일 첨부 기능
-- [ ] 좋아요/북마크 기능
-- [ ] 알림 기능
-- [ ] 관리자 페이지
-- [ ] 프로덕션 배포 설정 (Docker, CI/CD)
-- [ ] 성능 모니터링 (Actuator, Prometheus)
-- [ ] 로깅 시스템 (Logback, ELK)
+- [ ] 프로필 이미지 업로드
+- [ ] 게시글 좋아요/북마크
+- [ ] 실시간 알림 (WebSocket)
+- [ ] 다크 모드
+- [ ] 이메일 인증
+- [ ] 비밀번호 찾기/재설정
+- [ ] 프로덕션 데이터베이스 마이그레이션 (PostgreSQL)
+- [ ] Docker 배포 설정
+- [ ] CI/CD 파이프라인
 
 ---
 
-**마지막 업데이트**: 2025-11-17
+**마지막 업데이트**: 2025-11-18
 **프로젝트 버전**: 1.0.0
